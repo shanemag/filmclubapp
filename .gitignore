@@ -1,0 +1,8 @@
+.classpath
+.git
+.project
+.settings/
+dependency-reduced-pom.xml
+schema.sql
+filmclub.yml
+target/
