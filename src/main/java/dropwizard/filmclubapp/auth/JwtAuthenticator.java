@@ -16,8 +16,6 @@ public class JwtAuthenticator implements Authenticator<JwtContext, User> {
 
 	/**
 	 * Extracts user roles from Jwt. This method will be called once the token's signature has been verified.
-	 * <p>
-	 * All JsonWebTokenExceptions will result in a 401 Unauthorized response.
 	 */
 	@Override
 	public Optional<User> authenticate(JwtContext context) {

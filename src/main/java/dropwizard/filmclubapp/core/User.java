@@ -20,10 +20,10 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class User implements Principal {
 	 
-	 private final String passHash;
+	 private String password;
 	 
 	 @Column(name = "display_name")
-	 private final String userName;
+	 private String userName;
 	 
 	 @ManyToMany(cascade = { 
 		        CascadeType.PERSIST, 
@@ -40,9 +40,12 @@ public class User implements Principal {
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private long id;
 	 
-	 public User(String userName, String passHash) {
+	 public User() {	 
+	 }
+	 
+	 public User(String userName, String password) {
 	     this.userName = userName;
-	     this.passHash = passHash;
+	     this.password = password;
 	 }
 	 
      public String getName() {
@@ -66,10 +69,10 @@ public class User implements Principal {
 
          return Objects.equals(this.id, that.id) &&
                  Objects.equals(this.userName, that.userName) &&
-                 Objects.equals(this.passHash, that.passHash);
+                 Objects.equals(this.password, that.password);
      }
      
-     public String getHash() {
-		return passHash;
+     public String getPassword() {
+		return password;
      }
 }

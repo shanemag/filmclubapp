@@ -1,9 +1,9 @@
 package dropwizard.filmclubapp;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
@@ -12,10 +12,13 @@ import io.dropwizard.db.DataSourceFactory;
 public class FilmClvbConfiguration extends Configuration {
 	
 	private static final String DATABASE = "database";
-	private String jwtTokenSecret = "dfwzsdzwh823zebdwdz772632gdsbd";
+	
+	@NotEmpty
+	private String jwtTokenSecret;
 
-    public byte[] getJwtTokenSecret() throws UnsupportedEncodingException {
-        return jwtTokenSecret.getBytes("UTF-8");
+	@JsonProperty
+    public String getJwtTokenSecret() {
+        return jwtTokenSecret;
     }
 
 	@Valid

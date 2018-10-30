@@ -12,11 +12,6 @@ import io.dropwizard.auth.AuthFilter;
 
 public class AuthFilterUtils {	
 
-//	public BasicCredentialAuthFilter<PrincipalImpl> buildBasicAuthFilter() {
-//		return new BasicCredentialAuthFilter.Builder<PrincipalImpl>().setAuthenticator(new BasicAuthenticator()).setPrefix("Basic")
-//				.buildAuthFilter();
-//	}
-
 	public AuthFilter<JwtContext, User> buildJwtAuthFilter() {
 		final JwtConsumer consumer = new JwtConsumerBuilder().setAllowedClockSkewInSeconds(300).setRequireSubject()
 				.setVerificationKey(new HmacKey(Secrets.JWT_SECRET_KEY)).build();

@@ -54,23 +54,23 @@ public class FilmClvbApplication extends Application<FilmClvbConfiguration> {
 
     @Override
     public void run(FilmClvbConfiguration configuration, Environment environment) throws Exception {   
-    	 registerResources(environment);
+    	 registerResources(environment, configuration);
     	 registerAuthFilters(environment, configuration);
     }
     
-    private void registerResources(Environment environment) {
+    private void registerResources(Environment environment, FilmClvbConfiguration configuration) {
     	final UserDAO userdao = new UserDAO(hibernate.getSessionFactory());
     	final ReviewDAO reviewdao = new ReviewDAO(hibernate.getSessionFactory());
     	final ClubDAO clubdao = new ClubDAO(hibernate.getSessionFactory());
         environment.jersey().register(new ReviewResource(reviewdao));
         environment.jersey().register(new ClubResource(clubdao));
-        environment.jersey().register(new AuthResource(userdao));
+        environment.jersey().register(new AuthResource(userdao, configuration));
         environment.jersey().register(new UserResource(userdao));
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
     }
     
 	private void registerAuthFilters(Environment environment, FilmClvbConfiguration configuration) throws Exception {
-		 final byte[] key = configuration.getJwtTokenSecret();
+		 final byte[] key = configuration.getJwtTokenSecret().getBytes();;
 		 final JwtConsumer consumer = new JwtConsumerBuilder()
             .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
             .setRequireExpirationTime() // the JWT must have an expiration time

@@ -4,12 +4,11 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
 
-import java.security.Principal;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,33 +18,27 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.keys.HmacKey;
 import org.jose4j.lang.JoseException;
 
-import com.google.common.base.Optional;
-
 import dropwizard.filmclubapp.resources.dto.LoginDTO;
 import dropwizard.filmclubapp.resources.dto.TokenDTO;
-import dropwizard.filmclubapp.auth.Secrets;
+import dropwizard.filmclubapp.FilmClvbConfiguration;
 import dropwizard.filmclubapp.core.User;
 import dropwizard.filmclubapp.dao.UserDAO;
-
+import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.caching.CacheControl;
-
-/**
- * Exchanges login information for a JWT token.
- *
- * @author Hendrik van Huyssteen
- * @since 09 Aug 2017
- */
 
 @Path("auth")
 public class AuthResource {
 	
 	private UserDAO dao;
+	private byte[] SECRET;
 	
-	public AuthResource(UserDAO dao) {
+	public AuthResource(UserDAO dao, FilmClvbConfiguration conf) {
 		this.dao = dao;
+		this.SECRET = conf.getJwtTokenSecret().getBytes();
 	}
 
 	@POST
+	@UnitOfWork
 	@Consumes(APPLICATION_JSON)
 	@Produces(APPLICATION_JSON)
 	@Path("/login")
@@ -61,6 +54,7 @@ public class AuthResource {
 	}
 
 	@POST
+	@UnitOfWork
 	@Consumes(APPLICATION_JSON)
 	@Produces(APPLICATION_JSON)
 	@Path("/register")
@@ -86,7 +80,7 @@ public class AuthResource {
 		final JsonWebSignature jws = new JsonWebSignature();
 		jws.setPayload(claims.toJson());
 		jws.setAlgorithmHeaderValue(HMAC_SHA256);
-		jws.setKey(new HmacKey(Secrets.JWT_SECRET_KEY));
+		jws.setKey(new HmacKey(SECRET));
 		return jws;
 	}
 }
